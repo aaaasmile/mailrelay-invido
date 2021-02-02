@@ -94,3 +94,10 @@ srv.ListenAndServeTLS("cert/server.crt", "cert/server.key")
 ## Test
 Ho testato il relay con gmx e il mio account ventennale di posta senza nessuna difficoltà.
 
+## Secret
+Il file con tutte le mail e account è messo nel file secret.json. 
+Il quale deve essere criptato per funzionare. 
+Alla prima volta genera un file key.pem che viene usato per crytpare il secret.
+Si usa -encr alla command line per generare il file.
+Poi si fa ripartire mail-relay e funziona.
+

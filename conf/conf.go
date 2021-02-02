@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"os"
@@ -27,7 +28,7 @@ type SecretConfig struct {
 
 var Current = &Config{}
 
-func ReadConfig(configfile string) (*Config, error) {
+func ReadConfig(configfile string, rawsecret *[]byte) (*Config, error) {
 	_, err := os.Stat(configfile)
 	if err != nil {
 		return nil, err
@@ -35,28 +36,14 @@ func ReadConfig(configfile string) (*Config, error) {
 	if _, err := toml.DecodeFile(configfile, &Current); err != nil {
 		return nil, err
 	}
-
-	Current.SecretConfig, err = readSecretFromJSONFile(Current.TokenFilename)
-	if err != nil {
-		return nil, err
-	}
-	return Current, nil
-}
-
-func readSecretFromJSONFile(cfgFile string) (*SecretConfig, error) {
-	log.Println("Read Secret configuration file ", cfgFile)
-	f, err := os.Open(cfgFile)
-	if err != nil {
-		return nil, err
-	}
-
-	defer f.Close()
 	info := SecretConfig{}
 
-	err = json.NewDecoder(f).Decode(&info)
+	err = json.NewDecoder(bytes.NewReader(*rawsecret)).Decode(&info)
 	if err != nil {
 		return nil, err
 	}
+	Current.SecretConfig = &info
+	log.Println("Relay sistem is ", info.RemoteSendHost)
 
-	return &info, nil
+	return Current, nil
 }

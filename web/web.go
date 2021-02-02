@@ -13,9 +13,9 @@ import (
 	"github.com/aaaasmile/mailrelay-invido/web/srvhandler"
 )
 
-func RunService(configfile string) error {
+func RunService(configfile string, rawsecret *[]byte) error {
 
-	config, err := conf.ReadConfig(configfile)
+	config, err := conf.ReadConfig(configfile, rawsecret)
 	if err != nil {
 		return err
 	}
