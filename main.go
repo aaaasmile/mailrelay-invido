@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	if *ver {
-		fmt.Printf("%s, version: %s", idl.Appname, idl.Buildnr)
+		fmt.Printf("%s, version: %s\n", idl.Appname, idl.Buildnr)
 		os.Exit(0)
 	}
 
