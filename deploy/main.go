@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/aaaasmile/mailrelay-invido/deploy/depl"
 )
 
 var (
@@ -16,7 +18,8 @@ var (
 
 func main() {
 	const (
-		mailrelay = "mailrelay"
+		mailrelay    = "mailrelay"
+		mailrelaywin = "mailrelaywin"
 	)
 	var outdir = flag.String("outdir", "",
 		fmt.Sprintf("Output zip directory. If empty use the hardcoded one: %s\n", defOutDir))
@@ -27,11 +30,14 @@ func main() {
 	flag.Parse()
 
 	rootDirRel := ".."
-	pathItems := []string{"mailrelay-invido.bin", "token.json"}
+	pathItems := []string{"mailrelay-invido.bin"}
 	switch *target {
 	case mailrelay:
 		pathItems = append(pathItems, "deploy/config_files/relay_config.toml")
 		pathItems[0] = "mailrelay-invido.bin"
+	case mailrelaywin:
+		pathItems = append(pathItems, "deploy/config_files/relay_config.toml")
+		pathItems[0] = "mailrelay-invido.exe"
 	default:
 		log.Fatalf("Deployment target %s is not recognized or not specified", *target)
 	}

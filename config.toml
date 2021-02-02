@@ -6,4 +6,3 @@
 # used to develop on windows
 ServiceURL = "127.0.0.1:465" 
 DebugVerbose = true
-TokenFilename = "secret.json"

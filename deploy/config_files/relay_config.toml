@@ -1,7 +1,6 @@
 # configuration for iot-invido
 ServiceURL = "0.0.0.0:465" 
 DebugVerbose = false
-TokenFilename = "secret.json"
 
 
 

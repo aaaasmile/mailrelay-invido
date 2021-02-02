@@ -14,7 +14,7 @@ import (
 
 const (
 	plainsecretname = "secret.json"
-	encsecretname   = "secret-enc.json"
+	encsecretname   = "cert/secret-enc.json"
 )
 
 func main() {

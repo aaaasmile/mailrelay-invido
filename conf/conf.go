@@ -10,10 +10,9 @@ import (
 )
 
 type Config struct {
-	ServiceURL    string
-	DebugVerbose  bool
-	TokenFilename string
-	SecretConfig  *SecretConfig
+	ServiceURL   string
+	DebugVerbose bool
+	SecretConfig *SecretConfig
 }
 
 type SecretConfig struct {
