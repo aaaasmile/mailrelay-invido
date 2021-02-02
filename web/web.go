@@ -8,13 +8,17 @@ import (
 	"strings"
 
 	"github.com/aaaasmile/mailrelay-invido/conf"
+	"github.com/aaaasmile/mailrelay-invido/web/idl"
 	"github.com/aaaasmile/mailrelay-invido/web/relay"
 	"github.com/aaaasmile/mailrelay-invido/web/srvhandler"
 )
 
 func RunService(configfile string) error {
 
-	conf.ReadConfig(configfile)
+	config, err := conf.ReadConfig(configfile)
+	if err != nil {
+		return err
+	}
 	log.Println("Configuration is read")
 	serverurl := conf.Current.ServiceURL
 	finalServURL := fmt.Sprintf("https://%s", strings.Replace(serverurl, "0.0.0.0", "localhost", 1))
@@ -22,13 +26,16 @@ func RunService(configfile string) error {
 	log.Println("Server started with URL ", serverurl)
 	log.Println("Try this url: ", finalServURL)
 
-	srv := &relay.Server{Addr: "127.0.0.1:2525", Handler: srvhandler.MailHandler,
-		AuthHandler:  srvhandler.AuthHandler,
+	hwd := srvhandler.SrvHandler{
+		Cfg: config.SecretConfig,
+	}
+	srv := &relay.Server{Addr: serverurl, Handler: hwd.MailHandler,
+		AuthHandler:  hwd.AuthHandler,
 		AuthRequired: true,
-		HandlerRcpt:  srvhandler.RcptHandler,
+		HandlerRcpt:  hwd.RcptHandler,
 		TLSListener:  true,
-		Appname:      "MyServerApp",
-		Hostname:     "example.com"}
+		Appname:      idl.Appname,
+		Hostname:     config.SecretConfig.HostName}
 
 	chShutdown := make(chan struct{}, 1)
 	go func(chs chan struct{}) {

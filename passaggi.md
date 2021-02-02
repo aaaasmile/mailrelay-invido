@@ -1,21 +1,24 @@
 # Mail-Relay
-Service che usao per mandare delle E-mail da remoto passando da smtp server dall'inidirizzo conosciuto
+Service  usato per mandare mail da remoto passando per un smtp server dall'inidirizzo conosciuto
 e affidabile.
-Il service è un mail relay. Vale a dire via tls e smtp offre la possibilità di mandare e-mail.
+Il service di questa repository è semplicemente un mail relay. 
+L'interfaccia di collegamento è anch'essa smtp over tls. 
 Prerequisito è un valido account email.
 
-Ho provato a mandare mail usando gmail da remoto, ma non è stato possibile usando token e auth2.
+Ho provato a mandare mails usando gmail da remoto, ma non è stato possibile in modo continuo usando token e auth2.
 La ragione principale è che gmail vuole un'autorizzazione manuale dell'uso dell'account di 
-posta per mandare mails (token valido solo 7 giorni). L'utilizzo del service account di g-suite
-non invia mails con gmail nella variante free.
+posta per mandare mails, con un token valido solo per 7 giorni. 
+L'utilizzo del service account di g-suite, invece, non invia mails con gmail nella variante free.
 
 Ho considerato la possibilità di settare un server di posta alla Postfix, ma quello che bisogna
 configurare e installare per avere un sistema, che in principio invia una mail a settimana,
-sembra troppo. Specialmente dopo aver dato un'occhiata ad un paio di repository tipo
+sembra troppo. 
+Dopo aver dato un'occhiata ad un paio di repository tipo
 https://github.com/mhale/smtpd e https://github.com/decke/smtprelay dalle quali ho preso gran parte del codice
-di questo Mail-Relay e l'ispirazione (vedi "Why another SMTP server?" in smtprelay)
+di questo Mail-Relay e l'ispirazione (vedi "Why another SMTP server?" in smtprelay), ho deciso
+di provare un smtp relay per mandare le mie mails saltuarie da dispositivi sparsi in giro.
 
-
+## Stop del service
 Per stoppare il sevice si usa:
 sudo systemctl stop mailrelay-invido
 
@@ -81,10 +84,13 @@ StandardError=syslog
 go mod init github.com/aaaasmile/mailrelay-invido
 
 
-== TLS Server
+## TLS Server
 Per lo sviluppo locale mi serve un server tls. Nel deployment uso nginx.
 keys and certificate:
 openssl genrsa -out server.key 2048
 openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
 srv.ListenAndServeTLS("cert/server.crt", "cert/server.key")
+
+## Test
+Ho testato il relay con gmx e il mio account ventennale di posta senza nessuna difficoltà.
 

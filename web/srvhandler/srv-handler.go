@@ -7,20 +7,23 @@ import (
 	"net/mail"
 	"net/smtp"
 
+	"github.com/aaaasmile/mailrelay-invido/conf"
 	"github.com/aaaasmile/mailrelay-invido/web/relay"
 )
 
-func MailHandler(origin net.Addr, from string, to []string, data []byte) error {
+type SrvHandler struct {
+	Cfg *conf.SecretConfig
+}
+
+func (hw *SrvHandler) MailHandler(origin net.Addr, from string, to []string, data []byte) error {
 	msg, _ := mail.ReadMessage(bytes.NewReader(data))
 	subject := msg.Header.Get("Subject")
 	log.Printf("Received mail from %s for %s with subject %s", from, to[0], subject)
-	// relay to gmail
-	remoteHost := "smtp.gmx.net:465"
-	hostName := "localhost"
+	remoteHost := hw.Cfg.RemoteSendHost
+	hostName := hw.Cfg.HostName
 	var auth smtp.Auth
-	//host, _, _ := net.SplitHostPort(remoteHost)
 
-	auth = relay.LoginAuth("myemail@gmx.net", "password")
+	auth = relay.LoginAuth(hw.Cfg.EMailLogin, hw.Cfg.EmailPassword)
 
 	err := relay.SendMail(
 		remoteHost,
@@ -40,14 +43,13 @@ func MailHandler(origin net.Addr, from string, to []string, data []byte) error {
 	return nil
 }
 
-func RcptHandler(remoteAddr net.Addr, from string, to string) bool {
-	//domain = getDomain(to)
+func (hw *SrvHandler) RcptHandler(remoteAddr net.Addr, from string, to string) bool {
 	//return domain == "mail.example.com" // could be checked if the sender is on this domain
 	log.Println("Rec handler", from, to)
 	return true
 }
 
-func AuthHandler(remoteAddr net.Addr, mechanism string, username []byte, password []byte, shared []byte) (bool, error) {
+func (hw *SrvHandler) AuthHandler(remoteAddr net.Addr, mechanism string, username []byte, password []byte, shared []byte) (bool, error) {
 	log.Println("Auth handler")
-	return string(username) == "username@example.tld" && string(password) == "password", nil
+	return string(username) == hw.Cfg.ServiceUser && string(password) == hw.Cfg.ServicePassword, nil
 }
