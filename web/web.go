@@ -27,7 +27,8 @@ func RunService(configfile string) error {
 	log.Println("Try this url: ", finalServURL)
 
 	hwd := srvhandler.SrvHandler{
-		Cfg: config.SecretConfig,
+		Cfg:   config.SecretConfig,
+		Debug: config.DebugVerbose,
 	}
 	srv := &relay.Server{Addr: serverurl, Handler: hwd.MailHandler,
 		AuthHandler:  hwd.AuthHandler,

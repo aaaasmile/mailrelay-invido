@@ -12,7 +12,8 @@ import (
 )
 
 type SrvHandler struct {
-	Cfg *conf.SecretConfig
+	Cfg   *conf.SecretConfig
+	Debug bool
 }
 
 func (hw *SrvHandler) MailHandler(origin net.Addr, from string, to []string, data []byte) error {
@@ -32,6 +33,7 @@ func (hw *SrvHandler) MailHandler(origin net.Addr, from string, to []string, dat
 		to,
 		data,
 		hostName,
+		hw.Debug,
 	)
 	if err != nil {
 		log.Println("delivery failed", err)

@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/smtp"
 	"net/textproto"
@@ -32,6 +33,7 @@ type Client struct {
 	localName  string // the name to use in HELO/EHLO
 	didHello   bool   // whether we've said HELO/EHLO
 	helloError error  // the error from the hello
+	Debug      bool
 }
 
 // Dial returns a new Client connected to an SMTP server at addr.
@@ -94,7 +96,10 @@ func (c *Client) Hello(localName string) error {
 
 // cmd is a convenience function that sends a command and returns the response
 func (c *Client) cmd(expectCode int, format string, args ...interface{}) (int, string, error) {
-	fmt.Println("*** cmd", format)
+	if c.Debug {
+		log.Println("cmd", format)
+	}
+
 	id, err := c.Text.Cmd(format, args...)
 	if err != nil {
 		return 0, "", err
@@ -233,7 +238,9 @@ func (c *Client) Auth(a smtp.Auth) error {
 // parameter.
 // This initiates a mail transaction and is followed by one or more Rcpt calls.
 func (c *Client) Mail(from string) error {
-	fmt.Println("*** Mail from ", from)
+	if c.Debug {
+		log.Println("Mail from ", from)
+	}
 	if err := validateLine(from); err != nil {
 		return err
 	}
@@ -307,8 +314,10 @@ var testHookStartTLS func(*tls.Config) // nil, except for tests
 // attachments (see the mime/multipart package), or other mail
 // functionality. Higher-level packages exist outside of the standard
 // library.
-func SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte, localname string) error {
-	fmt.Println("*** SendMail ", addr, a)
+func SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte, localname string, debug bool) error {
+	if debug {
+		log.Println("SendMail ", addr)
+	}
 	if err := validateLine(from); err != nil {
 		return err
 	}
@@ -333,6 +342,7 @@ func SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte, lo
 		if err != nil {
 			return err
 		}
+		c.Debug = debug
 		if err = c.hello(); err != nil {
 			return err
 		}
