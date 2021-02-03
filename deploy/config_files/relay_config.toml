@@ -1,5 +1,5 @@
 # configuration for iot-invido
-ServiceURL = "0.0.0.0:465" 
+ServiceURL = "0.0.0.0:2525" 
 DebugVerbose = false
 
 

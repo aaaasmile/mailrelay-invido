@@ -100,4 +100,6 @@ Il quale deve essere criptato per funzionare.
 Alla prima volta genera un file key.pem che viene usato per crytpare il secret.
 Si usa -encr alla command line per generare il file.
 Poi si fa ripartire mail-relay e funziona.
+Per aggiornare il server di invido, mi piazzo locale nella dir cer e mando:
+rsync -av *.* <user>@<server>:/home/igor/app/go/mailrelay-invido/current/cert/
 
