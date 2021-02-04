@@ -2,6 +2,7 @@ package srvhandler
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net"
 	"net/mail"
@@ -14,33 +15,40 @@ import (
 type SrvHandler struct {
 	Cfg   *conf.SecretConfig
 	Debug bool
+	relay bool
 }
 
 func (hw *SrvHandler) MailHandler(origin net.Addr, from string, to []string, data []byte) error {
-	msg, _ := mail.ReadMessage(bytes.NewReader(data))
+	msg, err := mail.ReadMessage(bytes.NewReader(data))
+	if err != nil {
+		log.Println("Does not appear a mail message")
+		return err
+	}
 	subject := msg.Header.Get("Subject")
 	log.Printf("Received mail from %s for %s with subject %s", from, to[0], subject)
 	remoteHost := hw.Cfg.RemoteSendHost
 	hostName := hw.Cfg.HostName
+	fmt.Println(string(data[:5000]))
 	var auth smtp.Auth
+	hw.relay = true
+	if hw.relay {
+		auth = relay.LoginAuth(hw.Cfg.EMailLogin, hw.Cfg.EmailPassword)
+		err := relay.SendMail(
+			remoteHost,
+			auth,
+			from,
+			to,
+			data,
+			hostName,
+			hw.Debug,
+		)
+		if err != nil {
+			log.Println("delivery failed", err)
+			return err
+		}
 
-	auth = relay.LoginAuth(hw.Cfg.EMailLogin, hw.Cfg.EmailPassword)
-
-	err := relay.SendMail(
-		remoteHost,
-		auth,
-		from,
-		to,
-		data,
-		hostName,
-		hw.Debug,
-	)
-	if err != nil {
-		log.Println("delivery failed", err)
-		return err
+		log.Printf("%s delivery successful\n", to)
 	}
-
-	log.Printf("%s delivery successful\n", to)
 
 	return nil
 }
