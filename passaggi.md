@@ -7,7 +7,7 @@ Prerequisito è un valido account email, per esempio gmx.
 
 Ho provato a mandare mails usando gmail da remoto, ma non è stato possibile in modo continuo usando token e auth2.
 La ragione principale è che gmail vuole un'autorizzazione manuale dell'uso dell'account di 
-posta per mandare mails, con un token valido solo per 7 giorni. 
+posta per mandare mails e il mio token è valido solo per 7 giorni. 
 L'utilizzo del service account di g-suite, invece, non invia mails con gmail nella variante free.
 
 Ho considerato la possibilità di settare un server di posta alla Postfix, ma quello che bisogna
