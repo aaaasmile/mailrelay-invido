@@ -18,7 +18,7 @@ https://github.com/mhale/smtpd e https://github.com/decke/smtprelay dalle quali 
 di questo Mail-Relay e l'ispirazione (vedi "Why another SMTP server?" in smtprelay), ho deciso
 di provare un smtp relay per mandare le mie mails saltuarie da dispositivi sparsi in giro.
 
-## Stop del service
+### Stop del service
 Per stoppare il sevice si usa:
 sudo systemctl stop mailrelay-invido
 
@@ -49,7 +49,7 @@ Nota il Type=idle che è meglio di simple in quanto così
 viene fatto partire quando anche la wlan ha ottenuto l'IP intranet
 per consentire l'accesso.
 
--------------------------------- file content
+```
 [Install]
 WantedBy=multi-user.target
 
@@ -79,13 +79,13 @@ ExecStartPre=/bin/chmod 755 /var/log/mailrelay-invido
 StandardOutput=syslog
 StandardError=syslog
 
-------------------------------------------- end file content
+```
 
 go mod init github.com/aaaasmile/mailrelay-invido
 
 
 ## TLS Server
-Per lo sviluppo locale mi serve un server tls. Nel deployment uso nginx.
+Per lo sviluppo locale mi serve un server tls. 
 keys and certificate:
 openssl genrsa -out server.key 2048
 openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
@@ -100,6 +100,6 @@ Il quale deve essere criptato per funzionare.
 Alla prima volta genera un file key.pem che viene usato per crytpare il secret.
 Si usa -encr alla command line per generare il file.
 Poi si fa ripartire mail-relay e funziona.
-Per aggiornare il server di invido, mi piazzo locale nella dir cer e mando:
+Per aggiornare il server di invido, mi piazzo locale nella dir cert e mando:
 rsync -av *.* <user>@<server>:/home/igor/app/go/mailrelay-invido/current/cert/
 
