@@ -3,7 +3,7 @@ Service  usato per mandare mail da remoto passando per un smtp server dall'inidi
 e affidabile.
 Il service di questa repository è semplicemente un mail relay. 
 L'interfaccia di collegamento è anch'essa smtp over tls. 
-Prerequisito è un valido account email.
+Prerequisito è un valido account email, per esempio gmx.
 
 Ho provato a mandare mails usando gmail da remoto, ma non è stato possibile in modo continuo usando token e auth2.
 La ragione principale è che gmail vuole un'autorizzazione manuale dell'uso dell'account di 
