@@ -87,19 +87,21 @@ go mod init github.com/aaaasmile/mailrelay-invido
 ## TLS Server
 Per lo sviluppo locale mi serve un server tls. 
 keys and certificate:
+```
 openssl genrsa -out server.key 2048
 openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
 srv.ListenAndServeTLS("cert/server.crt", "cert/server.key")
+```
 
 ## Test
 Ho testato il relay con gmx e il mio account ventennale di posta senza nessuna difficoltà.
 
 ## Secret
 Il file con tutte le mail e account è messo nel file secret.json. 
-Il quale deve essere criptato per funzionare. 
-Alla prima volta genera un file key.pem che viene usato per crytpare il secret.
+Per funzionare, secret.json deve essere criptato. 
+La prima esecuzione genera un file key.pem che viene usato per crytpare il secret.
 Si usa -encr alla command line per generare il file.
-Poi si fa ripartire mail-relay e funziona.
+Poi si fa ripartire mail-relay.
 Per aggiornare il server di invido, mi piazzo locale nella dir cert e mando:
 rsync -av *.* <user>@<server>:/home/igor/app/go/mailrelay-invido/current/cert/
 
