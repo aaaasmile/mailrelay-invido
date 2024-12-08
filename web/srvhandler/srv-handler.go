@@ -28,7 +28,14 @@ func (hw *SrvHandler) MailHandler(origin net.Addr, from string, to []string, dat
 	log.Printf("Received mail from %s for %s with subject %s", from, to[0], subject)
 	remoteHost := hw.Cfg.RemoteSendHost
 	hostName := hw.Cfg.HostName
-	fmt.Println(string(data[:5000]))
+	if hw.Debug {
+		if len(data) <= 5000 {
+			fmt.Println(string(data))
+		} else {
+			fmt.Println(string(data[:5000]))
+		}
+	}
+
 	var auth smtp.Auth
 	hw.relay = true
 	if hw.relay {

@@ -7,34 +7,37 @@ Prerequisito è un valido account email, per esempio gmx che alla fine manda la 
 
 ## Scenario
 
-  ┌─────────────────────┐
-  │                     │     ┌──────────────┐
-  │                     │     │              │      ┌──────────────┐
-  │                     │     │              │      │              │
-  │                     │     │            │ │      │              │
-  │   IOT device        │     │            └─┼──────┤►             │
-  │                     │     │  mail_relay  │      │              │
-  │  Crea la mail       │     │              │      │   Gmx service│
-  │   via SMTP   ┌──────┼─────┤►  (questo    │      │              │
-  │              │      │     │     service) │      │              │
-  │                     │     │              │      │              │
-  │                     │     │              │      │              │
-  └─────────────────────┘     └──────────────┘      │              │
-                                                    └──────┬───────┘
-                                                           │
-                                                           │
-                                                           │
-                          ┌────────────────┐               │
-                          │                │               │
-                          │  target@mail.com               │
-                          │                │               │
-                          │                │               │
-                          │ destinatario   ◄───────────────┘
-                          │                │
-                          │                │
-                          └────────────────┘
+    ┌─────────────────────┐
+    │                     │     ┌──────────────┐
+    │                     │     │              │      ┌──────────────┐
+    │                     │     │              │      │              │
+    │                     │     │            │ │      │              │
+    │   IOT device        │     │            └─┼──────┤►             │
+    │                     │     │  mail_relay  │      │              │
+    │  Crea la mail       │     │              │      │   Gmx service│
+    │   via SMTP   ┌──────┼─────┤►  (questo    │      │              │
+    │              │      │     │     service) │      │              │
+    │                     │     │              │      │              │
+    │                     │     │              │      │              │
+    └─────────────────────┘     └──────────────┘      │              │
+                                                      └──────┬───────┘
+                                                             │
+                                                             │
+                                                             │
+                            ┌────────────────┐               │
+                            │                │               │
+                            │  target@mail.com               │
+                            │                │               │
+                            │                │               │
+                            │ destinatario   ◄───────────────┘
+                            │                │
+                            │                │
+                            └────────────────┘
 ## Configurazione
-Il file di smtp di configurazione si trova in cert/secret-enc.json ed è interamente criptato.
+Il file di smtp di configurazione si trova in 
+
+    cert/secret-enc.json 
+ed è interamente criptato.
 
 ## Motivazione
 In principio, il dispositivo iot potrebbe mandare direttamente le mail usando il service
@@ -57,29 +60,39 @@ di provare un smtp relay per mandare le mie mails saltuarie da dispositivi spars
 
 ### Stop del service
 Per stoppare il sevice si usa:
-sudo systemctl stop mailrelay-invido
+
+    sudo systemctl stop mailrelay-invido
 
 ## Deployment su ubuntu direttamente
-git pull --all
-./publish-relay.sh
+
+    cd ~/build/mailrelay-invido
+    git pull --all
+    ./publish-relay.sh
 
 ## Service setup
 Ora bisogna abilitare il service:
-sudo systemctl enable mailrelay-invido.service
+
+    sudo systemctl enable mailrelay-invido.service
 Ora si fa partire il service (resistente al reboot):
-sudo systemctl start mailrelay-invido
+
+    sudo systemctl start mailrelay-invido
 Per vedere i logs si usa:
-sudo journalctl -f -u mailrelay-invido
+
+    sudo journalctl -f -u mailrelay-invido
 
 ## Service Config
 Questo il conetnuto del file che compare con:
-sudo nano /lib/systemd/system/mailrelay-invido.service
+
+    sudo nano /lib/systemd/system/mailrelay-invido.service
 Poi si fa l'enable:
-sudo systemctl enable mailrelay-invido.service
+
+    sudo systemctl enable mailrelay-invido.service
 E infine lo start:
-sudo systemctl start mailrelay-invido
+
+    sudo systemctl start mailrelay-invido
 Logs sono disponibili con:
-sudo journalctl -f -u mailrelay-invido
+
+    sudo journalctl -f -u mailrelay-invido
 
 Qui segue il contenuto del file mailrelay-invido.service
 Nota il Type=idle che è meglio di simple in quanto così 
@@ -140,5 +153,6 @@ La prima esecuzione genera un file key.pem che viene usato per criptare il secre
 Si usa -encr alla command line per generare il file.
 Poi si fa ripartire mail-relay.
 Per aggiornare il server di invido, mi piazzo locale nella dir cert e mando:
-rsync -av *.* <user>@<server>:/home/igor/app/go/mailrelay-invido/current/cert/
+
+    rsync -av *.* <user>@<server>:/home/igor/app/go/mailrelay-invido/current/cert/
 
